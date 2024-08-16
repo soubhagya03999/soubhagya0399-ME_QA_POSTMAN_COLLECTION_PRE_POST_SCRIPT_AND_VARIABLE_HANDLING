@@ -1,0 +1,598 @@
+{
+	"info": {
+		"_postman_id": "9763cae5-8c1d-41ba-96c5-44fd87dc24a2",
+		"name": "QTRIP API TEST",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "37493926",
+		"_collection_link": "https://augsprint-team.postman.co/workspace/Aug_Sprint~98e0756b-219e-4da0-8fd2-02d4694d0029/collection/37493926-9763cae5-8c1d-41ba-96c5-44fd87dc24a2?action=share&source=collection_link&creator=37493926"
+	},
+	"item": [
+		{
+			"name": "POST /api/v1/register",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var actualCode=pm.response.code;\r",
+							"var jsonbody=pm.response.json();\r",
+							"\r",
+							"    pm.test(\"Validate successful response code\",function(){\r",
+							"    pm.expect(actualCode).to.be.eq(201);\r",
+							"})\r",
+							"pm.test(\"Validate successful response message\",function(){\r",
+							"    pm.expect(jsonbody.success).to.be.eq(true);\r",
+							"})\r",
+							"pm.test(\"Veridate response time less with in 2s\",function(){\r",
+							"    pm.expect(pm.response.responseTime).lessThan(2000);\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var em = pm.variables.replaceIn(\"{{$randomEmail}}\");\r",
+							"pm.environment.set(\"email\",em);\r",
+							"var pass = pm.variables.replaceIn(\"{{$guid}}\");\r",
+							"pm.environment.set(\"password\",pass);\r",
+							"\r",
+							"// var email = pm.iterationData.get(\"Username\");\r",
+							"// var password = pm.iterationData.get(\"Password\");\r",
+							"// pm.environment.set(\"email\",email);\r",
+							"// pm.environment.set(\"password\",password);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"email\":\"{{email}}\",\r\n   \"password\":\"{{password}}\",\r\n   \"confirmpassword\":\"{{password}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}register",
+					"host": [
+						"{{URL}}register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST /api/v1/login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var code = pm.response.code;\r",
+							"var body = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Validate successful code\",function(){\r",
+							"    pm.expect(code).to.be.equals(201);\r",
+							"})\r",
+							"pm.test(\"Validate successful response message\",function(){\r",
+							"    pm.expect(body.success).to.be.equals(true);\r",
+							"})\r",
+							"pm.test(\"Validate response time with in 2s\",function(){\r",
+							"    pm.expect(pm.response.responseTime).lessThan(2000);\r",
+							"})\r",
+							"\r",
+							"pm.environment.set(\"token\",body.data.token);\r",
+							"pm.environment.set(\"id\",body.data.id);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"packages": {},
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"email\":\"{{email}}\",\r\n   \"password\":\"{{password}}\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}login",
+					"host": [
+						"{{URL}}login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET /api/v1/cities",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var code = pm.response.code;\r",
+							"var time = pm.response.responseTime;\r",
+							"var body = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Validate successful response code\",function(){\r",
+							"    pm.expect(code).to.be.eq(200);\r",
+							"})\r",
+							"pm.test(\"Validate response time with in 2s\",function(){\r",
+							"    pm.expect(time).lessThan(2000);\r",
+							"})\r",
+							"pm.test(\"Validate bengaluru city populated at response\",function(){\r",
+							"    let found = false;\r",
+							"    body.forEach(function(city){\r",
+							"        if(city.id==\"bengaluru\" && \r",
+							"        city.city==\"Bengaluru\" && \r",
+							"        city.description==\"100+ Places\" && \r",
+							"        city.image==\"https://images.pexels.com/photos/3573382/pexels-photo-3573382.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260\"){\r",
+							"            found=true;\r",
+							"        }\r",
+							"    })\r",
+							"    pm.expect(found).to.be.true;\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}cities",
+					"host": [
+						"{{URL}}cities"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET /api/v1/cities?q=<search-query>",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var code = pm.response.code;\r",
+							"var time = pm.response.responseTime;\r",
+							"var body = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Validate the successful response code\",function(){\r",
+							"    pm.expect(code).to.be.eq(200);\r",
+							"})\r",
+							"pm.test(\"Validate the response time with in 2s\",function(){\r",
+							"    pm.expect(time).lessThan(2000);\r",
+							"})\r",
+							"pm.test(\"Validate the response body\",function(){\r",
+							"    let found = false;\r",
+							"    body.forEach(function(city){\r",
+							"        if(city.id ==\"bengaluru\" && city.city == \"Bengaluru\" &&\r",
+							"        city.description == \"100+ Places\" &&\r",
+							"        city.image == \"https://images.pexels.com/photos/3573382/pexels-photo-3573382.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260\"){\r",
+							"            found=true;\r",
+							"        }\r",
+							"    })\r",
+							"    pm.expect(found).to.be.equal(true);\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}cities?q=beng",
+					"host": [
+						"{{URL}}cities"
+					],
+					"query": [
+						{
+							"key": "q",
+							"value": "beng"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET /api/v1/adventures?city=<city-name>",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var code = pm.response.code;\r",
+							"var time = pm.response.responseTime;\r",
+							"var body = pm.response.json();\r",
+							"pm.test(\"Validate successfull response code\",function(){\r",
+							"    pm.expect(code).to.be.eq(200);\r",
+							"})\r",
+							"pm.test(\"Validate response time with in 2s\",function(){\r",
+							"    pm.expect(time).lessThan(2000);\r",
+							"})\r",
+							"pm.test(\"Validate the response body having Niaboytown\",function(){\r",
+							"    let found = false;\r",
+							"    body.forEach(function(city){\r",
+							"        if(city.name==\"Niaboytown\"){\r",
+							"            found=true;\r",
+							"        }\r",
+							"    })\r",
+							"    pm.expect(found).to.be.true;\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}adventures?city=bengaluru",
+					"host": [
+						"{{URL}}adventures"
+					],
+					"query": [
+						{
+							"key": "city",
+							"value": "bengaluru"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET /api/v1/adventures?city=<city-name>&q=<search-query>",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var code = pm.response.code;\r",
+							"var body = pm.response.json();\r",
+							"var time = pm.response.responseTime;\r",
+							"\r",
+							"pm.test(\"Validate successful response code\",function(){\r",
+							"    pm.expect(code).to.be.eq(200);\r",
+							"})\r",
+							"pm.test(\"Validate response time with in 2s\",function(){\r",
+							"    pm.expect(time).lessThan(2000);\r",
+							"})\r",
+							"pm.test(\"Validate response body info\",function(){\r",
+							"    let count = 0;\r",
+							"    body.forEach(function(city){\r",
+							"        if(city.id==\"2447910730\"){\r",
+							"            count++;\r",
+							"        }\r",
+							"        if(city.name==\"Niaboytown\"){\r",
+							"            count++;\r",
+							"        }\r",
+							"        if(city.costPerHead==4003){\r",
+							"            count++;\r",
+							"        }\r",
+							"        if(city.currency==\"INR\"){\r",
+							"            count++;\r",
+							"        }\r",
+							"        if(city.image==\"https://images.pexels.com/photos/837745/pexels-photo-837745.jpeg?auto=compress&cs=tinysrgb&h=650&w=940\"){\r",
+							"            count++;\r",
+							"        }\r",
+							"        if(city.duration==6){\r",
+							"            count++;\r",
+							"        }\r",
+							"        if(city.category==\"Party\"){\r",
+							"            count++;\r",
+							"        }\r",
+							"    })\r",
+							"    pm.expect(count).to.be.eq(7);\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}adventures?city=bengaluru&q=nia",
+					"host": [
+						"{{URL}}adventures"
+					],
+					"query": [
+						{
+							"key": "city",
+							"value": "bengaluru"
+						},
+						{
+							"key": "q",
+							"value": "nia"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET /api/v1/adventures/detail?adventure=<adventure-id>",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var code = pm.response.code;\r",
+							"var body = pm.response.json();\r",
+							"var time = pm.response.responseTime;\r",
+							"\r",
+							"pm.test(\"Validate successful response code\",function(){\r",
+							"    pm.expect(code).to.be.eq(200);\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Validate responseTime with in 2s\",function(){\r",
+							"    pm.expect(time).lessThan(2000);\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Validate request ID is present in response body\",function(){\r",
+							"    pm.expect(body.id).to.be.eq(\"2447910730\");\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}adventures/detail?adventure=2447910730",
+					"host": [
+						"{{URL}}adventures"
+					],
+					"path": [
+						"detail"
+					],
+					"query": [
+						{
+							"key": "adventure",
+							"value": "2447910730"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "reservations",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var code = pm.response.code;\r",
+							"var body = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Validate the successful response code\",function(){\r",
+							"    pm.expect(code).to.be.eq(200);\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Validate the successful response message\",function(){\r",
+							"    pm.expect(body.success).to.be.eq(true);\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Validate response time with in 2s\",function(){\r",
+							"    pm.expect(pm.response.responseTime).lessThan(2000);\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"userId\":\"{{id}}\",\r\n   \"name\":\"{{$randomUserName}}\",\r\n   \"date\":\"{{$randomDateFuture}}\",\r\n   \"person\":\"1\",\r\n   \"adventure\":\"2447910730\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}reservations/new",
+					"host": [
+						"{{URL}}reservations"
+					],
+					"path": [
+						"new"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET /api/v1/reservations?id=<user-id>",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Validate successful status code\",function(){\r",
+							"    pm.expect(pm.response.code).to.be.eq(200);\r",
+							"})\r",
+							"pm.test(\"Validate responseTime with in 2s\",function(){\r",
+							"    pm.expect(pm.response.responseTime).lessThan(2000);\r",
+							"})\r",
+							"pm.test(\"Validate requested userId present in the response body\",function(){\r",
+							"    var iD = pm.variables.get(\"id\");\r",
+							"    var responseBody = pm.response.json();\r",
+							"    pm.expect(responseBody[0].userId).to.exist;\r",
+							"    pm.expect(responseBody[0].userId).to.be.eq(iD);\r",
+							"})\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}reservations/?id={{id}}",
+					"host": [
+						"{{URL}}reservations"
+					],
+					"path": [
+						""
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "{{id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE /api/v1/reservations/:<reservation-id>",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Validate successful status code\",function(){\r",
+							"    pm.expect(pm.response.code).to.be.eq(200);\r",
+							"})\r",
+							"pm.test(\"Validate responseTime with in 2s\",function(){\r",
+							"    pm.expect(pm.response.responseTime).lessThan(2000);\r",
+							"})\r",
+							"pm.test(\"Validate response body having successful message\",function(){\r",
+							"    var responseBody = pm.response.json();\r",
+							"    pm.expect(responseBody.success).to.be.eq(true);\r",
+							"})\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"userId\":\"{{id}}\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}reservations/{{id}}",
+					"host": [
+						"{{URL}}reservations"
+					],
+					"path": [
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
